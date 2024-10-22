@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Authority</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blockchain-based PKI Management</h1>
+    <div>
+        <h2>Issue Certificate</h2>
+        <input type="text" id="issueAddress" placeholder="Ethereum Address" />
+        <button id="issueBtn">Issue Certificate</button>
+        <div id="issueAlert"></div>
+    </div>
+    <div>
+        <h2>Verify Certificate</h2>
+        <input type="text" id="verifyAddress" placeholder="Ethereum Address" />
+        <button id="verifyBtn">Verify Certificate</button>
+        <div id="verifyAlert"></div>
+    </div>
+    <div>
+        <h2>Revoke Certificate</h2>
+        <input type="text" id="revokeAddress" placeholder="Ethereum Address" />
+        <button id="revokeBtn">Revoke Certificate</button>
+        <div id="revokeAlert"></div>
+    </div>
+
+   
+
+    <script>
+$('#issueBtn').click(function() {
+    const userAddress = $('#issueAddress').val();
+    $.post('/issue-certificate', { userAddress })
+        .done(function(data) {
+            $('#issueAlert').html(`<span style="color: green;">${data.message}</span>`);
+        })
+        .fail(function(jqXHR) {
+            $('#issueAlert').html(`<span style="color: red;">${jqXHR.responseJSON.error}</span>`);
+        });
+});
+
+$('#revokeBtn').click(function() {
+    const userAddress = $('#revokeAddress').val();
+    $.post('/revoke-certificate', { userAddress })
+        .done(function(data) {
+            $('#revokeAlert').html(`<span style="color: green;">${data.message}</span>`); // Use backticks
+        })
+        .fail(function(jqXHR) {
+            $('#revokeAlert').html(`<span style="color: red;">${jqXHR.responseJSON.error}</span>`); // Use backticks
+        });
+});
+
+$('#verifyBtn').click(function() {
+    const userAddress = $('#verifyAddress').val();
+    $.post('/verify-certificate', { userAddress })
+        .done(function(data) {
+            $('#verifyAlert').html(`<span style="color: green;">Certificate is valid: ${data.isValid}</span>`); // Use backticks
+        })
+        .fail(function(jqXHR) {
+            $('#verifyAlert').html(`<span style="color: red;">${jqXHR.responseJSON.error}</span>`); // Use backticks
+        });
+});
+
+    </script>
+</body>
+</html>
