@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.28;
 
 contract CertificateAuthority {
     struct Certificate {
@@ -7,22 +7,37 @@ contract CertificateAuthority {
         bool isRevoked;  // Revocation status
     }
 
-    mapping(address => Certificate) public certificates;
+    // Mapping to store certificates by user address
+    mapping(address => Certificate) private certificates;
 
     // Event to log certificate issuance
     event CertificateIssued(address indexed user, string certHash);
     // Event to log revocation
     event CertificateRevoked(address indexed user);
 
+    // Owner of the contract
+    address public owner;
+
+    // Constructor to set the deployer as the contract owner
+    constructor() {
+        owner = msg.sender;
+    }
+
+    // Modifier to restrict access to owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not authorized");
+        _;
+    }
+
     // Function to issue a certificate
-    function issueCertificate(address user, string memory certHash) public {
+    function issueCertificate(address user, string memory certHash) public onlyOwner {
         require(bytes(certificates[user].certHash).length == 0, "Certificate already issued");
         certificates[user] = Certificate(certHash, false);
         emit CertificateIssued(user, certHash);
     }
 
     // Function to revoke a certificate
-    function revokeCertificate(address user) public {
+    function revokeCertificate(address user) public onlyOwner {
         require(!certificates[user].isRevoked, "Certificate already revoked");
         certificates[user].isRevoked = true;
         emit CertificateRevoked(user);

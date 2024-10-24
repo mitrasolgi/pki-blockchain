@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate Authority</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/0.10.0/forge.min.js"></script> <!-- Include Forge.js -->
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,12 +25,12 @@
         <button id="issueBtn">Issue Certificate</button>
         <div id="issueAlert"></div>
     </div>
-    <div>
+    <!-- <div>
         <h2>Verify Certificate</h2>
         <input type="text" id="verifyAddress" placeholder="Ethereum Address" />
         <button id="verifyBtn">Verify Certificate</button>
         <div id="verifyAlert"></div>
-    </div>
+    </div> -->
     <div>
         <h2>Revoke Certificate</h2>
         <input type="text" id="revokeAddress" placeholder="Ethereum Address" />
@@ -36,12 +38,40 @@
         <div id="revokeAlert"></div>
     </div>
 
-   
+    <div>
+        <h2>Generated Certificate</h2>
+        <pre id="certificateDisplay"></pre> <!-- Area to display the certificate -->
+    </div>
 
     <script>
-$('#issueBtn').click(function() {
-    const userAddress = $('#issueAddress').val();
-    $.post('/issue-certificate', { userAddress })
+// Generate an X.509 certificate
+function generateCertificate(userAddress) {
+            const keys = forge.pki.rsa.generateKeyPair(2048); // Generate RSA key pair
+            const cert = forge.pki.createCertificate();
+            cert.publicKey = keys.publicKey;
+            cert.serialNumber = '01';
+            cert.validFrom = new Date().toISOString(); // Set validFrom to now
+            cert.validTo = new Date();
+            cert.validTo.setFullYear(cert.validTo.getFullYear() + 1); // Valid for 1 year
+            cert.setSubject([{ name: 'commonName', value: userAddress }]); // Set the subject
+            cert.setIssuer([{ name: 'commonName', value: 'Certificate Authority' }]); // Set the issuer
+            cert.sign(keys.privateKey, forge.md.sha256.create()); // Sign the certificate
+
+            // Convert the certificate to PEM format
+            const certPem = forge.pki.certificateToPem(cert);
+            return certPem; // Return the PEM formatted certificate
+        }
+
+        // Handle the Issue Certificate button click
+        $('#issueBtn').click(function() {
+    const userAddress = $('#issueAddress').val(); // Get the Ethereum address from input
+    const certPem = generateCertificate(userAddress); // Generate the certificate in PEM format
+    
+    // Display the generated certificate
+    $('#certificateDisplay').text(certPem);
+
+    // Send the certificate data to the blockchain
+    $.post('/issue-certificate', { userAddress, certPem })
         .done(function(data) {
             $('#issueAlert').html(`<span style="color: green;">${data.message}</span>`);
         })

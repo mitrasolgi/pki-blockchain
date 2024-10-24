@@ -1,10 +1,15 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.28+commit.7893614a"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
 			{
 				"anonymous": false,
 				"inputs": [
@@ -36,30 +41,6 @@
 				],
 				"name": "CertificateRevoked",
 				"type": "event"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "certificates",
-				"outputs": [
-					{
-						"internalType": "string",
-						"name": "certHash",
-						"type": "string"
-					},
-					{
-						"internalType": "bool",
-						"name": "isRevoked",
-						"type": "bool"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
 			},
 			{
 				"inputs": [
@@ -101,6 +82,19 @@
 				"name": "issueCertificate",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -164,11 +158,11 @@
 	},
 	"sources": {
 		"smart_cert.sol": {
-			"keccak256": "0x4af26b50b3ba0b541f9d6397e6357224eef64ddf63c18a44711384bb3e868093",
+			"keccak256": "0xd6ca0a5e8b9331495498c2b03568093124cc376dfc7d25594791c610430615c9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1a8ee9ef63e32fd1dc8029e5b5e63b3bd6916e15a8aef572b012590f9af1a6a4",
-				"dweb:/ipfs/QmWdhZ4g35Q9x38eN2CxeoEptbTRdKtWRSJ7FBx17PyQAM"
+				"bzz-raw://29870846c0d15f57d3dae6072e755baba0c472b091159a964c86fc3da2365ab8",
+				"dweb:/ipfs/QmWe1oMwgvMMa99PJSUuriHimCW38oVfdGLN4FD2suNn6b"
 			]
 		}
 	},
